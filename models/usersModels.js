@@ -41,6 +41,10 @@ const validate = (data) => {
     username: Joi.string().required().label("Username"),
     password: Joi.string().required().label("Password"),
     role: Joi.string().required().label("Role"),
+    type: Joi.string().label("Type"),
+    governorate: Joi.string().label("Governorate"),
+    region: Joi.string().label("Governorate"),
+    region: Joi.string().label("Governorate"),
   });
   return schema.validate(data);
 };
