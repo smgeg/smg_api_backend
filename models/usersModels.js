@@ -10,6 +10,18 @@ const usersSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter a name"],
   },
+  phone: {
+    type: Number,
+    required: [true, "Please enter a phone"],
+  },
+  email: {
+    type: String,
+    required: [true, "Please enter a email"],
+  },
+  job: {
+    type: String,
+    required: [true, "Please enter a job"],
+  },
   username: {
     type: String,
     required: [true, "Please enter a Username"],
@@ -21,6 +33,27 @@ const usersSchema = mongoose.Schema({
   role: {
     type: String,
     required: [true, "Please enter a role"],
+  },
+  type: {
+    type: String,
+    required: [true, "Please enter a type"],
+  },
+  governorate: {
+    type: String,
+    required: [true, "Please enter a governorate"],
+  },
+  region: {
+    type: String,
+    required: [true, "Please enter a region"],
+  },
+
+  commercial_registration: {
+    type: Number,
+    //required: [true, "Please enter a Commercial Registration No"],
+  },
+  tax_card: {
+    type: Number,
+    //required: [true, "Please enter a Tax card number"],
   },
 });
 
@@ -34,17 +67,18 @@ const User = mongoose.model("users", usersSchema);
 
 const validate = (data) => {
   const schema = Joi.object({
-    code: Joi.string().label("Code"),
+    code: Joi.string().required().label("Code"),
     name: Joi.string().required().label("Name"),
     email: Joi.string().required().label("Email"),
     phone: Joi.string().required().label("Phone"),
     username: Joi.string().required().label("Username"),
     password: Joi.string().required().label("Password"),
     role: Joi.string().required().label("Role"),
-    type: Joi.string().label("Type"),
-    governorate: Joi.string().label("Governorate"),
-    region: Joi.string().label("Governorate"),
-    region: Joi.string().label("Governorate"),
+    type: Joi.string().required().label("Type"),
+    governorate: Joi.string().required().label("Governorate"),
+    region: Joi.string().required().label("Region"),
+    commercial_registration: Joi.string().label("Commercial Registration"),
+    tax_card: Joi.string().label("Tax Card"),
   });
   return schema.validate(data);
 };
