@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User } = require("../models/usersModels");
+const { Customers } = require("../models/customersModels");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
 router.post("/", async (req, res) => {
@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
     if (error) {
       return res.status(400).send({ message: error.details[0].message });
     }
-    const user = await User.findOne({ username: req.body.username });
+    const user = await Customers.findOne({ username: req.body.username });
     if (!user) {
       return res.status(401).send({ message: "Invalid Username" });
     }

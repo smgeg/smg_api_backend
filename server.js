@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
-const usersRoutes = require("./routes/users");
+const customersRoutes = require("./routes/customers");
 const connection = require("./db");
 
 const port = 3005;
@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoutes);
+app.use("/api/customers", customersRoutes);
 
 // app.post("/users", async (req, res) => {
 //   try {

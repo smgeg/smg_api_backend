@@ -1,10 +1,12 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
+const AutoIncrement = require("mongoose-sequence")(mongoose);
+
 const jwt = require("jsonwebtoken");
-const usersSchema = mongoose.Schema({
+const customersSchema = mongoose.Schema({
   code: {
-    type: String,
-    required: [true, "Please enter a code"],
+    type: Number,
+    unique: true,
   },
   name: {
     type: String,
@@ -57,13 +59,14 @@ const usersSchema = mongoose.Schema({
   },
 });
 
-usersSchema.methods.generateAuthToken = function () {
+customersSchema.plugin(AutoIncrement, { inc_field: "code" });
+customersSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
   return token;
 };
-const User = mongoose.model("users", usersSchema);
+const Customers = mongoose.model("customers", customersSchema);
 
 const validate = (data) => {
   const schema = Joi.object({
@@ -83,4 +86,4 @@ const validate = (data) => {
   return schema.validate(data);
 };
 
-module.exports = { User, validate };
+module.exports = { Customers, validate };
