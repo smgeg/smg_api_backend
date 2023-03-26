@@ -32,10 +32,7 @@ const customersSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter a password"],
   },
-  role: {
-    type: String,
-    required: [true, "Please enter a role"],
-  },
+
   type: {
     type: String,
     required: [true, "Please enter a type"],
@@ -59,7 +56,11 @@ const customersSchema = mongoose.Schema({
   },
 });
 
-customersSchema.plugin(AutoIncrement, { inc_field: "code" });
+customersSchema.plugin(AutoIncrement, {
+  id: "code_seq",
+  inc_field: "code",
+  start_seq: 1,
+});
 customersSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
@@ -70,13 +71,14 @@ const Customers = mongoose.model("customers", customersSchema);
 
 const validate = (data) => {
   const schema = Joi.object({
-    code: Joi.string().required().label("Code"),
+    code: Joi.string().label("Code"),
     name: Joi.string().required().label("Name"),
     email: Joi.string().required().label("Email"),
     phone: Joi.string().required().label("Phone"),
     username: Joi.string().required().label("Username"),
     password: Joi.string().required().label("Password"),
-    role: Joi.string().required().label("Role"),
+    job: Joi.string().required().label("Job"),
+
     type: Joi.string().required().label("Type"),
     governorate: Joi.string().required().label("Governorate"),
     region: Joi.string().required().label("Region"),
