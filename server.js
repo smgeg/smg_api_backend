@@ -3,6 +3,9 @@ const app = express();
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const customersRoutes = require("./routes/customers");
+const coursesRoutes = require("./routes/courses");
+const subscriptionsRoutes = require("./routes/subscriptions");
+
 const connection = require("./db");
 
 const port = 3005;
@@ -15,6 +18,8 @@ app.get("/", (req, res) => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/customers", customersRoutes);
+app.use("/api/courses", coursesRoutes);
+app.use("/api/subscriptions", subscriptionsRoutes);
 
 // app.post("/users", async (req, res) => {
 //   try {

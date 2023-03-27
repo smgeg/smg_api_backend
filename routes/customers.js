@@ -14,20 +14,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// router.get("/", async (req, res) => {
-//   const lastUser = await User.findOne().sort({ code: -1 }).limit(1);
-//   let newCode = "";
-//   if (lastUser) {
-//     const lastCodeNum = parseInt(lastUser.code.substring(4), 10);
-//     const nextCode = (lastCodeNum + 1).toString().padStart(2, "0");
-
-//     newCode = `SCN-${nextCode}`;
-//   } else {
-//     newCode = "SCN-01";
-//   }
-//   res.json({ newCode });
-// });
-
 // get one customer by ID
 router.get("/:id", async (req, res) => {
   try {
@@ -77,7 +63,9 @@ router.post("/", async (req, res) => {
 
 // delete customer
 router.delete("/:id", async (req, res) => {
-  const deletedCustomer = await Customers.findByIdAndDelete(req.params.code);
+  const deletedCustomer = await Customers.findOneAndDelete({
+    code: req.params.id,
+  });
   try {
     if (deletedCustomer) {
       res.status(200).json({
@@ -91,4 +79,28 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err });
   }
 });
+
+router.patch("/:id", async (req, res) => {
+  const updateOps = { ...req.body };
+
+  try {
+    const customer = await Customers.findOneAndUpdate(
+      { code: req.params.id },
+      { $set: updateOps },
+      { new: true }
+    );
+    if (customer) {
+      res.status(200).json({
+        message: "Customer updated successfully",
+        updatedCustomer: customer,
+      });
+    } else {
+      res.status(404).json({ message: "Customer not found" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+});
+
 module.exports = router;

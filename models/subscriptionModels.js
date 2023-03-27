@@ -1,18 +1,16 @@
-// using nodejs and mongoose create subscription model with fields (coursesId,customerId,createdAt)?
-// Import required libraries
 const mongoose = require("mongoose");
 
 // Create subscription schema
-const subscriptionSchema = new mongoose.Schema({
+const subscriptionsSchema = new mongoose.Schema({
   code: {
     type: Number,
     unique: true,
   },
-  courseId: {
+  course_code: {
     type: Number,
     required: true,
   },
-  customerId: {
+  customer_code: {
     type: Number,
     required: true,
   },
@@ -21,8 +19,27 @@ const subscriptionSchema = new mongoose.Schema({
     default: Date.now(),
   },
 });
-customersSchema.plugin(AutoIncrement, { inc_field: "code" });
 
-const Subscription = mongoose.model("subscriptions", subscriptionSchema);
+subscriptionsSchema.pre("save", async function (next) {
+  const subscription = this;
+  if (subscription.isNew) {
+    const lastSubscription = await Subscriptions.findOne().sort({ code: -1 });
+    if (lastSubscription) {
+      subscription.code = lastSubscription.code + 1;
+    } else {
+      subscription.code = 1;
+    }
+  }
+  next();
+});
+const Subscriptions = mongoose.model("subscriptions", subscriptionsSchema);
 
-module.exports = Subscription;
+const validate = (data) => {
+  const schema = Joi.object({
+    course_code: Joi.string().required().label("course_code"),
+    customer_code: Joi.string().required().label("customer_code"),
+  });
+  return schema.validate(data);
+};
+
+module.exports = { Subscriptions, validate };

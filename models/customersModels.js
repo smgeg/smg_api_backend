@@ -57,7 +57,7 @@ const customersSchema = mongoose.Schema({
 });
 
 customersSchema.plugin(AutoIncrement, {
-  id: "code_seq",
+  id: "customer_code_seq",
   inc_field: "code",
   start_seq: 1,
 });
