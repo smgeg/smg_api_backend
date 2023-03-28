@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
+const { Subscriptions } = require("./subscriptionModels");
 
 const jwt = require("jsonwebtoken");
 const customersSchema = mongoose.Schema({
@@ -13,7 +14,7 @@ const customersSchema = mongoose.Schema({
     required: [true, "Please enter a name"],
   },
   phone: {
-    type: Number,
+    type: String,
     required: [true, "Please enter a phone"],
   },
   email: {
@@ -56,17 +57,38 @@ const customersSchema = mongoose.Schema({
   },
 });
 
-customersSchema.plugin(AutoIncrement, {
-  id: "customer_code_seq",
-  inc_field: "code",
-  start_seq: 1,
-});
 customersSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
   return token;
 };
+
+customersSchema.pre("save", async function (next) {
+  const customer = this;
+  if (customer.isNew) {
+    const lastCustomer = await Customers.findOne().sort({ code: -1 });
+    if (lastCustomer) {
+      customer.code = lastCustomer.code + 1;
+    } else {
+      customer.code = 1;
+    }
+  }
+  next();
+});
+
+customersSchema.pre("findOneAndDelete", async function (next) {
+  const customer = this.getQuery();
+  const subscriptions = await Subscriptions.find({
+    customer_code: customer.code,
+  });
+  if (subscriptions.length > 0) {
+    const error = Error("Cannot delete customer with associated subscriptions");
+    return next(error);
+  }
+  next();
+});
+
 const Customers = mongoose.model("customers", customersSchema);
 
 const validate = (data) => {

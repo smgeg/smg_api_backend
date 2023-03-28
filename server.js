@@ -6,10 +6,10 @@ const customersRoutes = require("./routes/customers");
 const coursesRoutes = require("./routes/courses");
 const subscriptionsRoutes = require("./routes/subscriptions");
 
+require("dotenv").config();
 const connection = require("./db");
 
 const port = 3005;
-
 app.use(express.json());
 app.use(cors());
 connection();

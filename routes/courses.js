@@ -64,7 +64,9 @@ router.delete("/:id", async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to delete course", error: error });
+    res
+      .status(500)
+      .json({ message: "Failed to delete course", error: error.message });
   }
 });
 

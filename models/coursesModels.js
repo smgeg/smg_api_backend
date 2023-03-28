@@ -49,7 +49,7 @@ coursesSchema.pre("save", async function (next) {
 });
 
 coursesSchema.pre("findOneAndDelete", async function (next) {
-  const course = this;
+  const course = this.getQuery();
   const subscriptions = await Subscriptions.find({
     course_code: course.code,
   });
