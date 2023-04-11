@@ -35,11 +35,13 @@ router.post("/", async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) {
-      return res.status(400).send({ message: error.details[0].message });
+      return res
+        .status(400)
+        .send({ message: error.details[0].message, details: error.details });
     }
     const user = await Customers.findOne({ username: req.body.username });
     if (user) {
-      return res.status(400).send({ message: "Username already exist" });
+      return res.status(409).send({ enMessage: "Username already exist" });
     }
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -50,13 +52,14 @@ router.post("/", async (req, res) => {
       password: hashPassword,
     }).save();
     res.status(201).send({
-      message: "Customer created successfully",
+      enTitle: "ِAccount created successfully",
+      arTitle: "تم انشاء الحساب",
       createdCustomer: createdCustomer,
     });
   } catch (error) {
     return res.status(500).send({
-      message: "Internal Server Error",
-      data: error.message,
+      eTitle: "Internal Server Error",
+      eMessage: error.message,
     });
   }
 });
@@ -76,7 +79,7 @@ router.delete("/:id", async (req, res) => {
       res.status(404).json({ message: "Customer not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ message: err });
   }
 });
 
@@ -95,11 +98,21 @@ router.patch("/:id", async (req, res) => {
         updatedCustomer: customer,
       });
     } else {
-      res.status(404).json({ message: "Customer not found" });
+      res.status(404).json({
+        enTitle: "Not Found",
+        arTitle: "غير موجود",
+        enMessage: "Customer not found",
+        arMessage: "اسم المستخدم غير موجود",
+      });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err });
+    res.status(500).json({
+      enTitle: "Internal Server Error",
+      arTitle: "خطأ سرفر داخلي",
+      enMessage: err,
+      arMessage: err,
+    });
   }
 });
 

@@ -4,7 +4,7 @@ const { Courses } = require("../models/coursesModels");
 const { Customers } = require("../models/customersModels");
 router.get("/", async (req, res) => {
   try {
-    const subscriptions = await Subscriptions.find().exec();
+    const subscriptions = await Subscriptions.find(req?.body).exec();
 
     const courses = await Courses.find({
       code: { $in: subscriptions.map((sub) => sub.course_code) },
@@ -42,6 +42,23 @@ router.get("/:id", async (req, res) => {
     } else {
       res.status(404).json({
         message: `Subscription with code ${req.params.id} was not found`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+router.get("/c/:id", async (req, res) => {
+  try {
+    const subscriptions = await Subscriptions.find({
+      customer_code: req.params.id,
+    });
+    if (subscriptions) {
+      res.status(200).json(subscriptions);
+    } else {
+      res.status(404).json({
+        message: `Subscription with customer code ${req.params.id} was not found`,
       });
     }
   } catch (error) {
@@ -87,9 +104,12 @@ router.delete("/:id", async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ message: "Failed to delete subscription", error: error.message });
+    res.status(500).json({
+      enTitle: "Failed to delete subscription",
+      arTitle: "فشل مسح الاشتراك",
+      enMessage: error.message,
+      arMessage: error.message,
+    });
   }
 });
 

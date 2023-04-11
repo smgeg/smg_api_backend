@@ -19,11 +19,11 @@ const customersSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, "Please enter a email"],
+    required: false,
   },
   job: {
     type: String,
-    required: [true, "Please enter a job"],
+    required: false,
   },
   username: {
     type: String,
@@ -40,19 +40,22 @@ const customersSchema = mongoose.Schema({
   },
   governorate: {
     type: String,
-    required: [true, "Please enter a governorate"],
+    required: false,
   },
   region: {
     type: String,
-    required: [true, "Please enter a region"],
+    required: false,
   },
 
-  commercial_registration: {
-    type: Number,
+  commercialRegistration: {
+    type: String,
+    required: false,
+
     //required: [true, "Please enter a Commercial Registration No"],
   },
-  tax_card: {
-    type: Number,
+  taxNumber: {
+    type: String,
+    required: false,
     //required: [true, "Please enter a Tax card number"],
   },
 });
@@ -95,17 +98,18 @@ const validate = (data) => {
   const schema = Joi.object({
     code: Joi.string().label("Code"),
     name: Joi.string().required().label("Name"),
-    email: Joi.string().required().label("Email"),
+    email: Joi.string().allow("").label("Email"),
     phone: Joi.string().required().label("Phone"),
     username: Joi.string().required().label("Username"),
     password: Joi.string().required().label("Password"),
-    job: Joi.string().required().label("Job"),
-
+    job: Joi.string().allow("").label("Job"),
     type: Joi.string().required().label("Type"),
-    governorate: Joi.string().required().label("Governorate"),
-    region: Joi.string().required().label("Region"),
-    commercial_registration: Joi.string().label("Commercial Registration"),
-    tax_card: Joi.string().label("Tax Card"),
+    governorate: Joi.string().allow("").label("Governorate"),
+    region: Joi.string().allow("").label("Region"),
+    commercialRegistration: Joi.string()
+      .allow("")
+      .label("Commercial Registration"),
+    taxNumber: Joi.string().allow("").label("Tax Number"),
   });
   return schema.validate(data);
 };
