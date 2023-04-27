@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Courses, validate } = require("../models/coursesModels");
+const { Courses, validate, newCode } = require("../models/coursesModels");
 const Joi = require("joi");
 
 router.get("/", async (req, res) => {
@@ -9,6 +9,16 @@ router.get("/", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
+  }
+});
+router.get("/newcode", async (req, res) => {
+  try {
+    const maxCode = await Courses.findOne().sort("-code").exec();
+    const newCode = ((maxCode && maxCode.code) || 0) + 1;
+    res.status(200).json({ new_code: newCode });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(`Server error`);
   }
 });
 
@@ -28,6 +38,9 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: error });
   }
 });
+
+
+
 
 // POST a new course
 router.post("/", async (req, res) => {

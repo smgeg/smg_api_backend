@@ -19,11 +19,11 @@ const customersSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: false,
+    //required: false,
   },
   job: {
     type: String,
-    required: false,
+   // required: false,
   },
   username: {
     type: String,
@@ -40,22 +40,22 @@ const customersSchema = mongoose.Schema({
   },
   governorate: {
     type: String,
-    required: false,
+    //required: false,
   },
   region: {
     type: String,
-    required: false,
+    //required: false,
   },
 
   commercialRegistration: {
     type: String,
-    required: false,
+   // required: false,
 
     //required: [true, "Please enter a Commercial Registration No"],
   },
   taxNumber: {
     type: String,
-    required: false,
+    //required: false,
     //required: [true, "Please enter a Tax card number"],
   },
 });

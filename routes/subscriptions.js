@@ -21,6 +21,7 @@ router.get("/", async (req, res) => {
         code: sub.code,
         course,
         customer,
+        status: sub.status,
         createdAt: sub.createdAt,
       };
     });
